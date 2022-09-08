@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useData, useTheme } from '../hooks';
-import { Home, BookList, Profile, Setting } from './Dashboard';
+import { Home, addProcess, report, Setting } from './Dashboard';
 import { Block, Text, Image } from '../components/';
 import { TouchableWithoutFeedback } from 'react-native';
 
@@ -90,12 +90,12 @@ export default function App() {
           title: translations.dashboardScreen.Home,
         }}
       />
-      <Tab.Screen name={translations.dashboardNavigation.BookList} component={BookList}
+      <Tab.Screen name={translations.dashboardNavigation.addProcess} component={addProcess}
         options={{
           tabBarIcon({ focused }) {
             return (
               <Block TabBarIcon>
-                <Image source={icons.basket} resizeMode='contain' width={25} height={25} style={{
+                <Image source={icons.documentation} resizeMode='contain' width={25} height={25} style={{
                   tintColor: focused ? colors.primary : colors.matching
                 }} />
               </Block>
@@ -109,7 +109,7 @@ export default function App() {
           title: translations.dashboardScreen.BookList,
         }}
       />
-      <Tab.Screen name={translations.dashboardNavigation.Profile} component={Profile} options={{
+      <Tab.Screen name={translations.dashboardNavigation.report} component={report} options={{
         tabBarIcon({ focused }) {
           return (
             <Block TabBarIcon>
