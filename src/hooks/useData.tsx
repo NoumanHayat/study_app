@@ -102,6 +102,31 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
     },
     [article, setArticle],
   );
+  const padToTwo = (number) => (number <= 9 ? `0${number}` : number);
+  const displayTime = (centiseconds: number) => {
+    let seconds = 0;
+    let minutes = 0;
+    if (centiseconds < 0) {
+      centiseconds = 0;
+    }
+
+    if (centiseconds < 1000) {
+      return `00:00:${padToTwo(centiseconds)}`
+    }
+
+    let remaincentiseconds = centiseconds % 1000;
+    seconds = (centiseconds - remaincentiseconds) / 1000;
+
+    if (seconds < 60) {
+      return `00:${padToTwo(seconds)}:${padToTwo(remaincentiseconds)}`;
+    }
+
+
+
+    let remainseconds = seconds % 60;
+    minutes = (seconds - remainseconds) / 60;
+    return `${padToTwo(minutes)}:${padToTwo(remainseconds)}:${padToTwo(remaincentiseconds)}`;
+  }
 
   const contextValue = {
     isDark,
@@ -124,7 +149,8 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
     setArticles,
     article,
     handleArticle,
-    data, setData
+    data, setData,
+    displayTime
   };
 
   return (

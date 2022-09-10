@@ -7,38 +7,20 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableWithoutFeedback } from 'react-native';
 // import CircularProgress from 'react-native-circular-progress-indicator';
+const getTime = () => {
+  const d = new Date();
+  return (d.getTime());
+}
 const App = (props) => {
   const { assets, colors, gradients, sizes, icons, } = useTheme();
-  const { translations, data, setData } = useData();
-
+  const { translations, data, setData, displayTime } = useData();
+  const navigation = props.navigation;
   const [completeData, setCompleteData] = useState(data ? data : []);
-  console.log(completeData[0] ? completeData[0] : 's')
+   console.log(completeData[0] ? completeData[0] : 's')
   const [showModal, setModal] = useState(false);
   const [selectedProcess, setSelectedProcess] = useState(0);
-  // const [step, setStep] = useState(data[0]?data[0].detail.step.name:[]);
-  const padToTwo = (number) => (number <= 9 ? `0${number}` : number);
-  const displayTime = (seconds: number) => {
-    let minutes = 0;
-    let hours = 0;
-    if (seconds < 0) {
-      seconds = 0;
-    }
-
-    if (seconds < 60) {
-      return `00:00:${padToTwo(seconds)}`
-    }
-
-    let remainseconds = seconds % 60;
-    seconds = (seconds - remainseconds) / 60;
-
-    if (minutes < 60) {
-      return `00:00:${padToTwo(seconds)}:${padToTwo(remainseconds)}`;
-    }
-
-    let remainminutes = minutes % 60;
-    hours = (minutes - remainminutes) / 60;
-    return `${padToTwo(hours)}:${padToTwo(remainminutes)}:${padToTwo(remainseconds)}`;
-  }
+  const [refresh, setRefresh] = useState(false);
+  const [comment, setComment] = useState('');
   return (
     <Block safeScroll flex={1}  >
       <Block style={{ borderBottomStartRadius: 25, borderBottomEndRadius: 25, }} align="center" justify='center' backgroundColor={'#3676EC'} height={sizes.width * 0.60} >
@@ -69,11 +51,11 @@ const App = (props) => {
       </Block>
       {/* ============================================================================================== */}
       <Block flex={1} margin={sizes.sm}>
-        <Text h5 marginBottom={sizes.sm}>Batch 1</Text>
+        <Text h5 marginBottom={sizes.sm}>Batch {completeData[selectedProcess]?.batch.length}</Text>
         {completeData[selectedProcess]?.steps?.map((item, index) => {
-          console.log(item)
-          return(
-            <Block Block card row margin = { 4} key = { index } >
+          // console.log(item)
+          return (
+            <Block Block card row margin={4} key={index} >
               <Block flex={1} style={{ justifyContent: 'center' }}><Text h5>{item.name}</Text></Block>
               <Block flex={1} row>
                 <Button
@@ -81,12 +63,19 @@ const App = (props) => {
                   gradient={gradients.divider}
                   style={{ margin: 5 }}
                   onPress={async () => {
-                    console.log("Start")
+                    console.log(item.active)
+                    if (!item.active) {
+                      item.lastUpdate = getTime();
+                    } else {
+                      item.time = item.time + (getTime() - item.lastUpdate);
+                      item.lastUpdate = 0;
+                    }
+                    item.active = !item.active;
+                    // let display= displayTime(item.time/1000);
+                    setRefresh(!refresh)
                   }}>
                   <Text bold transform="uppercase">
-                    <AntDesign name="pause" size={24} color="black" />
-                    {/* <AntDesign name="rightcircle" size={20} color="black" /> */}
-
+                    {item.active ? <AntDesign name="pause" size={24} color="blue" /> : <AntDesign name="rightcircle" size={20} color="black" />}
                   </Text>
                 </Button>
                 <Button
@@ -100,16 +89,59 @@ const App = (props) => {
                     );
                   }}>
                   <Text bold transform="uppercase">
-                    <AntDesign name="delete" size={24} color="black" />
+                    <AntDesign name="delete" size={24} color="red" />
                   </Text>
                 </Button>
               </Block>
-              </Block>
-          ) 
+            </Block>
+          )
         })}
+        {completeData[0] ? <Input multiline={true} onChangeText={(e) => { setComment(e) }} placeholder="Please Enter Comment" /> : <Text ></Text>}
+        {completeData[0] ? <Button
+          flex={1}
+          gradient={gradients.info}
+          margin={sizes.base}
+          onPress={() => {
+            let formatting = completeData[selectedProcess]?.steps.map((item, index) => {
+              let time = displayTime(item.time);
+              let name = item.name;
+              return { name, time }
+            })
 
-    </Block>
-      {/* ========================================================================================= */ }
+            let newBatch = {
+              comment,
+              steps: formatting
+            }
+            let batch =completeData[selectedProcess].batch;
+            batch.push(newBatch)
+            completeData[selectedProcess].batch[batch];
+            navigation.push("Dashboard")
+          }}>
+          <Text white bold transform="uppercase">
+            New Batch
+          </Text>
+        </Button> : <Text ></Text>}
+
+      </Block>
+      {/* ========================================================================================= */}
+      <Modal visible={showModal} onRequestClose={() => setModal(false)}>
+        <FlatList
+          keyExtractor={(index) => `${index}`}
+          data={completeData ? completeData.map((item, index) => { return item.processName }) : ['none']}
+          renderItem={({ item, index }) => (
+            <Button
+              marginBottom={sizes.sm}
+              onPress={() => {
+                setSelectedProcess(index);
+                setModal(false);
+              }}>
+              <Text p semibold transform="uppercase">
+                {item}
+              </Text>
+            </Button>
+          )}
+        />
+      </Modal>
     </Block >
   );
 
