@@ -40,6 +40,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
       setIsDark(JSON.parse(isDarkJSON));
     }
   }, [setIsDark]);
+
   const changeLanguage = useCallback(async () => {
     // get preferance gtom storage
     const language = await Storage.getItem('Language');

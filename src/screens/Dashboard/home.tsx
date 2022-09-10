@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect, useCallback, useRef } from 'react';
 import { Block, Button, Modal, Text, Input, Image, Switch } from '../../components/';
 import { ImageBackground, Dimensions, View, TouchableOpacity, FlatList } from 'react-native';
 import { useTheme, useData } from '../../hooks/';
@@ -6,20 +6,58 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableWithoutFeedback } from 'react-native';
-
+// import CircularProgress from 'react-native-circular-progress-indicator';
 const App = (props) => {
   const { assets, colors, gradients, sizes, icons, } = useTheme();
-  // borderTopStartRadius: 45,
-  //       borderTopEndRadius: 45,
   const [process, setProcess] = useState('01');
   const [showModal, setModal] = useState(false);
   const [step, setStep] = useState([1, 2, 3, 4]);
-  //       // bottom: 35, 
+  // let interval;
+  const padToTwo = (number) => (number <= 9 ? `0${number}` : number);
+  const displayTime = (seconds: number) => {
+    let minutes = 0;
+    let hours = 0;
+    if (seconds < 0) {
+      seconds = 0;
+    }
+
+    if (seconds < 60) {
+      return `00:00:${padToTwo(seconds)}`
+    }
+
+    let remainseconds = seconds % 60;
+    seconds = (seconds - remainseconds) / 60;
+
+    if (minutes < 60) {
+      return `00:00:${padToTwo(seconds)}:${padToTwo(remainseconds)}`;
+    }
+
+    let remainminutes = minutes % 60;
+    hours = (minutes - remainminutes) / 60;
+    return `${padToTwo(hours)}:${padToTwo(remainminutes)}:${padToTwo(remainseconds)}`;
+  }
+
+  const [pause, setPause] = useState(false);
+  const [displayTimeString, setDisplayTimeString] = useState('00:00:00');
+  const [time, setTime] = useState(0);
+
+  
+
+  useEffect(() => {
+    if (!pause) {
+      setTimeout(() => {
+        setPause(true);
+      }, 200);
+    }
+  }, [pause]);
+
+  if (!pause) return null;
   return (
     <Block safeScroll flex={1}  >
       <Block style={{ borderBottomStartRadius: 25, borderBottomEndRadius: 25, }} align="center" justify='center' backgroundColor={'#3676EC'} height={sizes.width * 0.60} >
         <Text white>Timing</Text>
-        <Text h1 white>7:43:00</Text>
+        <Text h1 white>{displayTimeString}</Text>
+        
       </Block>
       <Block flex={1} margin={sizes.sm}>
         <Text h5 marginBottom={sizes.sm}>Select Process</Text>
@@ -55,10 +93,20 @@ const App = (props) => {
                   flex={1}
                   gradient={gradients.divider}
                   style={{ margin: 5 }}
-                  onPress={() => {
-                    alert(
-                      ' <Button flex={1} gradient={gradients.custom5} marginBottom={sizes.base} > <Text white bold transform="uppercase"> title</Text></Button>',
-                    );
+                  onPress={async () => {
+                    // console.log('handleLeftButtonPress');
+                    // setPause(false);
+                    let interval;
+                    if (!pause) {
+                      interval = setInterval(() => {
+                        setTime((p) => p + 1);
+                        console.log(time)
+                        setDisplayTimeString(displayTime(time))
+                      }, 1000);
+                    } else {
+                      clearInterval(interval);
+                    }
+
                   }}>
                   <Text bold transform="uppercase">
                     <AntDesign name="pause" size={24} color="black" />
@@ -69,9 +117,9 @@ const App = (props) => {
                   gradient={gradients.divider}
                   style={{ margin: 5 }}          // style={{ margin: 5 }}
                   onPress={() => {
-                    alert(
-                      ' <Button flex={1} gradient={gradients.custom5} marginBottom={sizes.base} > <Text white bold transform="uppercase"> title</Text></Button>',
-                    );
+                    // handleRightButtonPress()
+                    console.log("react-native-stopwatch-timer")
+                    setPause(true)
                   }}>
                   <Text bold transform="uppercase">
                     <AntDesign name="rightcircle" size={20} color="black" />
