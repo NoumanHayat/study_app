@@ -16,12 +16,18 @@ const App = (props) => {
   const { translations, data, setData, displayTime } = useData();
   const navigation = props.navigation;
   const [completeData, setCompleteData] = useState(data ? data : []);
-   console.log(completeData[0] ? completeData[0] : 's')
+  console.log(completeData[0] ? completeData[0] : 's')
   const [showModal, setModal] = useState(false);
   const [selectedProcess, setSelectedProcess] = useState(0);
   const [refresh, setRefresh] = useState(false);
   const [comment, setComment] = useState('');
-  return ( 
+  const deleteProcess = (index) => {
+    let temp=data;
+    temp.splice(index,1);
+    setData(temp);
+    setRefresh(!refresh)
+  }
+  return (
     <Block safeScroll flex={1}  >
       <Block style={{ borderBottomStartRadius: 25, borderBottomEndRadius: 25, }} align="center" justify='center' backgroundColor={'#3676EC'} height={sizes.width * 0.60} >
         <Text white>Timing</Text>
@@ -51,7 +57,7 @@ const App = (props) => {
       </Block>
       {/* ============================================================================================== */}
       <Block flex={1} margin={sizes.sm}>
-        <Text h5 marginBottom={sizes.sm}>Batch {completeData[selectedProcess]?(completeData[selectedProcess]?.batch.length+1):0}</Text>
+        <Text h5 marginBottom={sizes.sm}>Batch {completeData[selectedProcess] ? (completeData[selectedProcess]?.batch.length + 1) : 0}</Text>
         {completeData[selectedProcess]?.steps?.map((item, index) => {
           // console.log(item)
           return (
@@ -83,7 +89,7 @@ const App = (props) => {
                   style={{ margin: 5 }}
                   gradient={gradients.divider}
                   onPress={() => {
-                      item.time = 0;
+                    item.time = 0;
                     setRefresh(!refresh)
                   }}>
                   <Text bold transform="uppercase">
@@ -110,13 +116,13 @@ const App = (props) => {
               comment,
               steps: formatting
             }
-            let batch =completeData[selectedProcess].batch;
+            let batch = completeData[selectedProcess].batch;
             batch.push(newBatch)
             completeData[selectedProcess].batch[batch];
-            completeData[selectedProcess]?.steps?.forEach((item)=>{
+            completeData[selectedProcess]?.steps?.forEach((item) => {
               item.lastUpdate = 0;
-              item.time=0;
-              item.active=false;
+              item.time = 0;
+              item.active = false;
             })
             navigation.push("Dashboard")
           }}>
@@ -132,16 +138,21 @@ const App = (props) => {
           keyExtractor={(index) => `${index}`}
           data={completeData ? completeData.map((item, index) => { return item.processName }) : ['none']}
           renderItem={({ item, index }) => (
-            <Button
-              marginBottom={sizes.sm}
-              onPress={() => {
-                setSelectedProcess(index);
-                setModal(false);
-              }}>
-              <Text p semibold transform="uppercase">
-                {item}
-              </Text>
-            </Button>
+            <Block >
+                <Button
+                  marginBottom={sizes.sm}
+                  onPress={() => {
+                    setSelectedProcess(index);
+                    setModal(false);
+                  }}>
+
+                  <Text p semibold transform="uppercase">
+                    {item}
+                  </Text>
+                </Button>
+              
+              
+            </Block>
           )}
         />
       </Modal>
