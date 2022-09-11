@@ -18,6 +18,10 @@ import {
 import { light, dark } from '../constants';
 import { en, ch } from '../constants/translations';
 export const DataContext = React.createContext({});
+import firestore from '@react-native-firebase/firestore';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+
+
 
 export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [translations, setTranslations] = useState(en);
@@ -127,6 +131,22 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
     minutes = (seconds - remainseconds) / 60;
     return `${padToTwo(minutes)}:${padToTwo(remainseconds)}:${padToTwo(remaincentiseconds)}`;
   }
+  const sendReport =(report)=>{
+    
+    let response;
+    try {
+      //  auth().createUserWithEmailAndPassword("masasmam@gmail.com", "Nomankhen");
+      firestore().collection('Report').add({
+        report
+      }).then(function () {
+        // console.log({ status: 'success', message: 'User Added Successfully!' })
+      }).catch((Error) => {
+        console.log({ status: 'fail', message: Error });
+      })
+    } catch (error) {
+      console.log ({ status: 'fail', message: error })
+    }
+  }
 
   const contextValue = {
     isDark,
@@ -150,7 +170,8 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
     article,
     handleArticle,
     data, setData,
-    displayTime
+    displayTime,
+    sendReport
   };
 
   return (

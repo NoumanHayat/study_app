@@ -7,13 +7,13 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import { ScrollView } from 'react-native-gesture-handler';
 
 export default function Home() {
-  const { translations, data, setData, displayTime } = useData();
+  const { translations, data, setData, displayTime,sendReport } = useData();
   const [completeData, setCompleteData] = useState(data ? data : []);
   const [process, setProcess] = useState('01');
   const [showModal, setModal] = useState(false);
   const [selectedProcess, setSelectedProcess] = useState(0);
   console.log("================================================")
-  console.log(completeData[selectedProcess]?.batch.length)
+  // console.log(completeData[selectedProcess]?.batch.length)
   console.log("================================================")
 
   const { assets, colors, gradients, sizes, icons, } = useTheme();
@@ -59,6 +59,8 @@ export default function Home() {
                 </Block>
               )
             })}
+            <Text h5>Comment</Text>
+            <Text>{item?.comment}</Text>
           </Block>
         )
       })}
@@ -85,20 +87,31 @@ export default function Home() {
       </Block> */}
 
       <Block margin={10}>
-        <Button
+        {completeData[selectedProcess]?<Button
           flex={1}
           gradient={gradients.custom6}
           marginBottom={sizes.base}
           onPress={() => {
-            alert(
-              ' <Button flex={1} gradient={gradients.custom6} marginBottom={sizes.base} > <Text white bold transform="uppercase"> title</Text></Button>',
-            );
+            // console.log()
+            //  sendReport(completeData[selectedProcess])
+            let abc=completeData[selectedProcess].batch.map((item,index)=>{
+              let responce={Comment:item.comment , Steps:item.steps}
+              // let responce2 =item.steps
+              return responce;
+            })
+            console.log(completeData[selectedProcess].processName)
+            let report={
+              processName:completeData[selectedProcess].processName,
+              batch:abc
+            }
+            sendReport(report)
           }}>
           <Text white bold transform="uppercase">
             Send Report
           </Text>
         </Button>
-      </Block>
+      : <Text ></Text>}
+        </Block>
 
       <Modal visible={showModal} onRequestClose={() => setModal(false)}>
         <FlatList

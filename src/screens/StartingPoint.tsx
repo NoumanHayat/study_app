@@ -30,7 +30,7 @@ const App = (props) => {
               navigation.push(translations.navigation.Dashboard);
             }}>
             <Text white bold transform="uppercase">
-              Sign Up
+              Let's Go
             </Text>
           </Button>
         </Block>
