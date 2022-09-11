@@ -21,7 +21,7 @@ const App = (props) => {
   const [selectedProcess, setSelectedProcess] = useState(0);
   const [refresh, setRefresh] = useState(false);
   const [comment, setComment] = useState('');
-  return (
+  return ( 
     <Block safeScroll flex={1}  >
       <Block style={{ borderBottomStartRadius: 25, borderBottomEndRadius: 25, }} align="center" justify='center' backgroundColor={'#3676EC'} height={sizes.width * 0.60} >
         <Text white>Timing</Text>
@@ -51,7 +51,7 @@ const App = (props) => {
       </Block>
       {/* ============================================================================================== */}
       <Block flex={1} margin={sizes.sm}>
-        <Text h5 marginBottom={sizes.sm}>Batch {completeData[selectedProcess]?.batch.length}</Text>
+        <Text h5 marginBottom={sizes.sm}>Batch {(completeData[selectedProcess]?.batch.length)+1}</Text>
         {completeData[selectedProcess]?.steps?.map((item, index) => {
           // console.log(item)
           return (
@@ -82,11 +82,9 @@ const App = (props) => {
                   flex={1}
                   style={{ margin: 5 }}
                   gradient={gradients.divider}
-                  // style={{ margin: 5 }}
                   onPress={() => {
-                    alert(
-                      ' <Button flex={1} gradient={gradients.custom5} marginBottom={sizes.base} > <Text white bold transform="uppercase"> title</Text></Button>',
-                    );
+                      item.time = 0;
+                    setRefresh(!refresh)
                   }}>
                   <Text bold transform="uppercase">
                     <AntDesign name="delete" size={24} color="red" />

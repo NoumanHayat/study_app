@@ -7,9 +7,15 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import { ScrollView } from 'react-native-gesture-handler';
 
 export default function Home() {
-  const { translations } = useData();
+  const { translations, data, setData, displayTime } = useData();
+  const [completeData, setCompleteData] = useState(data ? data : []);
   const [process, setProcess] = useState('01');
   const [showModal, setModal] = useState(false);
+  const [selectedProcess, setSelectedProcess] = useState(0);
+  console.log("================================================")
+  console.log(completeData[selectedProcess]?.batch.length)
+  console.log("================================================")
+
   const { assets, colors, gradients, sizes, icons, } = useTheme();
   return (
     <Block safeScroll flex={1}>
@@ -26,7 +32,7 @@ export default function Home() {
             justify="space-between"
             paddingHorizontal={sizes.sm}>
             <Text white bold transform="uppercase" marginRight={sizes.sm}>
-              {process}
+              {completeData[0] ? completeData[0].processName : "Select Process"}
             </Text>
             <Image
               source={assets.arrow}
@@ -37,7 +43,26 @@ export default function Home() {
         </Button>
       </Block>
 
-      <Block card margin={10}>
+      {completeData[selectedProcess]?.batch.map((item, index) => {
+
+
+        return (
+          <Block key={index} card margin={10}>
+            <Text h4>Batch {index + 1}</Text>
+            {item?.steps.map((step, indexTow) => {
+              return (
+                <Block  key ={indexTow} row margin={4}>
+                  <Block flex={1} style={{ justifyContent: 'center' }}><Text h5>{step.name}</Text></Block>
+                  <Block flex={1} marginLeft={'50%'}>
+                    <Text>{step.time}</Text>
+                  </Block>
+                </Block>
+              )
+            })}
+          </Block>
+        )
+      })}
+      {/* <Block card margin={10}>
         <Text h4>Batch 1</Text>
         <Block row margin={4}>
           <Block flex={1} style={{ justifyContent: 'center' }}><Text h5>Step 1</Text></Block>
@@ -57,95 +82,33 @@ export default function Home() {
             <Text>49.4 mins</Text>
           </Block>
         </Block>
-      </Block>
-      <Block card margin={10}>
-        <Text h4>Batch 1</Text>
-        <Block row margin={4}>
-          <Block flex={1} style={{ justifyContent: 'center' }}><Text h5>Step 1</Text></Block>
-          <Block flex={1} marginLeft={'50%'}>
-            <Text>49.4 mins</Text>
-          </Block>
-        </Block>
-        <Block row margin={4}>
-          <Block flex={1} style={{ justifyContent: 'center' }}><Text h5>Step 1</Text></Block>
-          <Block flex={1} marginLeft={'50%'}>
-            <Text>49.4 mins</Text>
-          </Block>
-        </Block>
-        <Block row margin={4} >
-          <Block flex={1} style={{ justifyContent: 'center' }}><Text h5>Step 1</Text></Block>
-          <Block flex={1} marginLeft={'50%'}>
-            <Text>49.4 mins</Text>
-          </Block>
-        </Block>
-      </Block>
-      <Block card margin={10}>
-        <Text h4>Batch 1</Text>
-        <Block row margin={4}>
-          <Block flex={1} style={{ justifyContent: 'center' }}><Text h5>Step 1</Text></Block>
-          <Block flex={1} marginLeft={'50%'}>
-            <Text>49.4 mins</Text>
-          </Block>
-        </Block>
-        <Block row margin={4}>
-          <Block flex={1} style={{ justifyContent: 'center' }}><Text h5>Step 1</Text></Block>
-          <Block flex={1} marginLeft={'50%'}>
-            <Text>49.4 mins</Text>
-          </Block>
-        </Block>
-        <Block row margin={4} >
-          <Block flex={1} style={{ justifyContent: 'center' }}><Text h5>Step 1</Text></Block>
-          <Block flex={1} marginLeft={'50%'}>
-            <Text>49.4 mins</Text>
-          </Block>
-        </Block>
-      </Block>
-      <Block card margin={10}>
-        <Text h4>Batch 1</Text>
-        <Block row margin={4}>
-          <Block flex={1} style={{ justifyContent: 'center' }}><Text h5>Step 1</Text></Block>
-          <Block flex={1} marginLeft={'50%'}>
-            <Text>49.4 mins</Text>
-          </Block>
-        </Block>
-        <Block row margin={4}>
-          <Block flex={1} style={{ justifyContent: 'center' }}><Text h5>Step 1</Text></Block>
-          <Block flex={1} marginLeft={'50%'}>
-            <Text>49.4 mins</Text>
-          </Block>
-        </Block>
-        <Block row margin={4} >
-          <Block flex={1} style={{ justifyContent: 'center' }}><Text h5>Step 1</Text></Block>
-          <Block flex={1} marginLeft={'50%'}>
-            <Text>49.4 mins</Text>
-          </Block>
-        </Block>
-      </Block>
+      </Block> */}
+
       <Block margin={10}>
-      <Button
-        flex={1}
-        gradient={gradients.custom6}
-        marginBottom={sizes.base}
-        onPress={() => {
-          alert(
-            ' <Button flex={1} gradient={gradients.custom6} marginBottom={sizes.base} > <Text white bold transform="uppercase"> title</Text></Button>',
-          );
-        }}>
-        <Text white bold transform="uppercase">
-          Send Report
-        </Text>
-      </Button>
+        <Button
+          flex={1}
+          gradient={gradients.custom6}
+          marginBottom={sizes.base}
+          onPress={() => {
+            alert(
+              ' <Button flex={1} gradient={gradients.custom6} marginBottom={sizes.base} > <Text white bold transform="uppercase"> title</Text></Button>',
+            );
+          }}>
+          <Text white bold transform="uppercase">
+            Send Report
+          </Text>
+        </Button>
       </Block>
-      
+
       <Modal visible={showModal} onRequestClose={() => setModal(false)}>
         <FlatList
           keyExtractor={(index) => `${index}`}
-          data={['01', '02', '03', '04', '05']}
-          renderItem={({ item }) => (
+          data={completeData ? completeData.map((item, index) => { return item.processName }) : ['none']}
+          renderItem={({ item, index }) => (
             <Button
               marginBottom={sizes.sm}
               onPress={() => {
-                setProcess(item);
+                setSelectedProcess(index);
                 setModal(false);
               }}>
               <Text p semibold transform="uppercase">
