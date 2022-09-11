@@ -51,7 +51,7 @@ const App = (props) => {
       </Block>
       {/* ============================================================================================== */}
       <Block flex={1} margin={sizes.sm}>
-        <Text h5 marginBottom={sizes.sm}>Batch {(completeData[selectedProcess]?.batch.length)+1}</Text>
+        <Text h5 marginBottom={sizes.sm}>Batch {completeData[selectedProcess]?(completeData[selectedProcess]?.batch.length+1):0}</Text>
         {completeData[selectedProcess]?.steps?.map((item, index) => {
           // console.log(item)
           return (
@@ -113,6 +113,11 @@ const App = (props) => {
             let batch =completeData[selectedProcess].batch;
             batch.push(newBatch)
             completeData[selectedProcess].batch[batch];
+            completeData[selectedProcess]?.steps?.forEach((item)=>{
+              item.lastUpdate = 0;
+              item.time=0;
+              item.active=false;
+            })
             navigation.push("Dashboard")
           }}>
           <Text white bold transform="uppercase">

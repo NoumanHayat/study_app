@@ -6,7 +6,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { ScrollView } from 'react-native-gesture-handler';
 
-export default function Home() {
+export default function Home(props) {
+  const navigation = props.navigation;
   const { translations, data, setData, displayTime,sendReport } = useData();
   const [completeData, setCompleteData] = useState(data ? data : []);
   const [process, setProcess] = useState('01');
@@ -92,8 +93,6 @@ export default function Home() {
           gradient={gradients.custom6}
           marginBottom={sizes.base}
           onPress={() => {
-            // console.log()
-            //  sendReport(completeData[selectedProcess])
             let abc=completeData[selectedProcess].batch.map((item,index)=>{
               let responce={Comment:item.comment , Steps:item.steps}
               // let responce2 =item.steps
@@ -104,7 +103,9 @@ export default function Home() {
               processName:completeData[selectedProcess].processName,
               batch:abc
             }
-            sendReport(report)
+            sendReport(report);
+            alert("Report is Sended");
+            navigation.push("Dashboard");
           }}>
           <Text white bold transform="uppercase">
             Send Report

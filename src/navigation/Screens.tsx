@@ -14,11 +14,11 @@ export default () => {
     <Stack.Navigator screenOptions={{
       headerShown: false
     }} >
-      {/* <Stack.Screen
+      <Stack.Screen
         name={translations.navigation.StartingPoint}
         component={StartingPoint}
         options={{ title: translations.Screen.StartingPoint }}
-      /> */}
+      />
       <Stack.Screen
         name="Dashboard"
         component={Dashboard}

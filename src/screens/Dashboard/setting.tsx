@@ -29,7 +29,6 @@ export default function Home(props) {
   const { translations, isDark, handleIsDark, changeLanguage } = useData();
   return (
     <Block safeScroll padding={sizes.padding}>
-      <Input search placeholder="Search" marginBottom={1} marginTop={sizes.sm} />
       <Block card padding={sizes.sm} marginTop={sizes.sm}>
         <Block flex={0} row justify="space-between" >
           <Text color={colors.contrasting}>{translations.darkMode}</Text>
@@ -43,29 +42,9 @@ export default function Home(props) {
           />
         </Block>
       </Block>
-      <Block card padding={sizes.sm} marginTop={sizes.sm}>
-        <Block flex={0} row justify="space-between" >
-          <Text color={colors.contrasting}>{translations.common.language}</Text>
-          <Switch
-            checked={language}
-            onPress={(checked) => {
-              setLanguage(checked);
-              changeLanguage();
-              setMessage(translations.settings.Change_Language);
-              setSuccessModal(true);
-            }}
-          />
-        </Block>
-      </Block>
+     
       {/* ========================================================================== */}
-      <TouchableWithoutFeedback onPress={() => {navigation.push(translations.navigation.Login)}}>
-        <Block card padding={sizes.sm} marginTop={sizes.sm} >
-          <Block flex={0} row justify="space-between" >
-            <Text color={colors.contrasting}>{translations.settings.Logout}</Text>
-            <Entypo name="arrow-bold-right" size={24} color={colors.contrasting} />
-          </Block> 
-        </Block>
-      </TouchableWithoutFeedback>
+      
 
       <Modal visible={showSuccessModal} onRequestClose={() => setSuccessModal(false)}>
         <ScrollView >

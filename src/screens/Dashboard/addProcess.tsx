@@ -43,14 +43,18 @@ export default function Home(props) {
               margin={sizes.base}
 
               onPress={() => {
-                let newStep={
-                  name:step,
-                  time:0,
-			            lastUpdate:0,
-                  active:false
+                if (step !== '') {
+                  let newStep = {
+                    name: step,
+                    time: 0,
+                    lastUpdate: 0,
+                    active: false
+                  }
+                  setSteps(item => [...item, newStep]);
+                } else {
+                  alert("Please Step Name")
                 }
-                setSteps(item=>[...item,newStep]);
-                
+
               }}>
               <Text white bold transform="uppercase">
                 Add Step
@@ -61,13 +65,18 @@ export default function Home(props) {
               gradient={gradients.info}
               margin={sizes.base}
               onPress={() => {
-                let newItem={
-                  processName:process_name,
-                  batch:[],
-                  steps
+                if (process_name !== '' || steps.length !== 0) {
+                  let newItem = {
+                    processName: process_name,
+                    batch: [],
+                    steps
+                  }
+                  setData(temp => [...temp, newItem])
+                  navigation.push("Dashboard")
+                } else {
+                  alert("Please Enter Details")
                 }
-                setData(temp => [...temp, newItem])
-                navigation.push("Dashboard")
+
               }}>
               <Text white bold transform="uppercase">
                 Save
