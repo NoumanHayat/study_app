@@ -3,7 +3,6 @@ import { View, ImageBackground, TouchableOpacity, SafeAreaView, TouchableWithout
 import { Block, Button, Input, Image, Switch, Modal, Text } from '../../components/';
 import { useTheme, useData } from '../../hooks/';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
 import { ScrollView } from 'react-native-gesture-handler';
 
 export default function Home(props) {
@@ -17,7 +16,14 @@ export default function Home(props) {
   const [process_name, setProcess_name] = useState('');
   const [steps, setSteps] = useState([]);
   const [step, setStep] = useState('');
+  const [refresh, setRefresh] = useState(false);
   // ============================================================================
+  const deleteStep = (index) => {
+    let temp=steps;
+    temp.splice(index,1);
+    setSteps(temp)
+    setRefresh(!refresh);
+  }
 
   return (
     <Block safeScroll flex={1}>
@@ -26,10 +32,16 @@ export default function Home(props) {
         <Input onChangeText={(e) => { setProcess_name(e) }} placeholder='Process Name' />
         <Block margin={sizes.sm} style={{ justifyContent: 'center' }}>
           {steps?.map((title, index) => {
-
             return (
-              <Block card marginTop={10} key={index}>
-                <Text h5>{title.name}</Text>
+              <Block card row marginTop={10} key={index}>
+                <Block flex={1}>
+                  <Text h5>{title.name}</Text>
+                </Block>
+                <Block flex={0}>
+                  <TouchableOpacity onPress={() => { deleteStep(index) }}>
+                    <AntDesign name="delete" size={24} color="red" />
+                  </TouchableOpacity>
+                </Block>
               </Block>
             )
           })}
